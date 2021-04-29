@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<GroundOverlay>
+<name>layer</name>
+<Icon><href>Dracocephalum_ruyschiana_climatesuitabilitymodel.png</href><viewBoundScale>0.75</viewBoundScale></Icon>
+	<LatLonBox>
+		<north>72.32714731209</north><south>56.95214792709</south><east>32.443894082637</east><west>1.19389533263698</west>
+	</LatLonBox>
+</GroundOverlay></kml>
