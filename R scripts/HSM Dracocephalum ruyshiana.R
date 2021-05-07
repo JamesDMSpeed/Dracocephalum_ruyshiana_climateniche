@@ -32,23 +32,27 @@ norwayP<-spTransform(norway,CRS=crs(predvars))
 
 
 #Importing Species data
-darcep<- read_excel("Data/Dracocephalum ruyschiana_GBIF_data_edited.xlsx",skip=4)
+darcep<- read_excel("Data/Dracocephalum ruyschiana_GBIF_data_edited_outliers_and_suspicious_marked.xlsx",skip=4)
 View(darcep)
-
-#Removing points without coordinates
-darcep<-darcep[!is.na(darcep$decimalLatitude) & !is.na(darcep$decimalLongitude),]
-
-#Removing points marked as outliers
-darcep<-darcep[is.na(darcep$Outliers),]
-
-#Removing fossil records
-summary(as.factor(darcep$basisOfRecord))
-darcep<-darcep[darcep$basisOfRecord!='FOSSIL_SPECIMEN',]
-
 dim(darcep)
+darcep$decimalLatitude<-as.numeric(darcep$decimalLatitude)
+darcep$decimalLongitude<-as.numeric(darcep$decimalLongitude)
+#Removing points without coordinates
+darcep1<-darcep[!is.na(as.numeric(darcep$decimalLatitude)) & !is.na(as.numeric(darcep$decimalLongitude)),]
+dim(darcep1)
+#Removing points with low precision coordinates?
+hist(as.numeric(darcep1$coordinateUncertaintyInMeters))
+#darcep2<-darcep1[darcep1$coordinateUncertaintyInMeters<5000,]
+#dim(darcep2)
+darcep2<-darcep1
+#Removing points marked as outliers
+
+darcep3<-darcep2[is.na(darcep2$`Geographical outliers and other data to be removed`),]
+dim(darcep3)
+
 
 #Convert to spatial points dataframe
-darcep_sp<-SpatialPointsDataFrame(cbind(as.numeric(darcep$decimalLongitude),as.numeric(darcep$decimalLatitude)),darcep,proj4string=CRS('+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0'))
+darcep_sp<-SpatialPointsDataFrame(cbind(as.numeric(darcep3$decimalLongitude),as.numeric(darcep3$decimalLatitude)),as.data.frame(darcep3),proj4string=CRS('+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0'))
 #Project to utm grid
 darcep_utm<-spTransform(darcep_sp,CRS=crs(predvars))
 
